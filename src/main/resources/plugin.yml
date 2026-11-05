@@ -1,0 +1,8 @@
+name: KubekCompanion
+version: '${project.version}'
+main: io.github.kubekpanel.companion.KubekCompanion
+description: Shares server metrics with the Kubek panel
+author: Seeroy
+website: https://github.com/KubekPanel/kubek-companion
+api-version: '1.13'
+folia-supported: true

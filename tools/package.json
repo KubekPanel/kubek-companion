@@ -1,0 +1,13 @@
+{
+  "name": "kubek-companion-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "probe": "bun probe.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^5.9.3"
+  }
+}
