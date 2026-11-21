@@ -33,7 +33,7 @@ public final class StatsCollector {
   private final Tasks tasks;
   private final Channel channel;
   private final Settings settings;
-  private final Sessions sessions;
+  private final PlayerSnapshot snapshot;
   private final TpsMeter tps;
   private final MsptMeter mspt;
   private final JvmMeter jvm;
@@ -44,7 +44,7 @@ public final class StatsCollector {
     this.tasks = tasks;
     this.channel = channel;
     this.settings = settings;
-    this.sessions = sessions;
+    this.snapshot = new PlayerSnapshot(compat, settings, sessions);
     this.tps = tps;
     this.mspt = mspt;
     this.jvm = jvm;
@@ -63,7 +63,7 @@ public final class StatsCollector {
     Location scratch = null;
     for (Player player : online) {
       if (scratch == null) scratch = new Location(player.getWorld(), 0, 0, 0);
-      players.add(player(player, scratch));
+      players.add(snapshot.of(player, scratch));
     }
     publish(ts, worlds, players, tps.read(), null);
   }
@@ -118,23 +118,6 @@ public final class StatsCollector {
     return out;
   }
 
-  private Map<String, Object> player(Player player, Location scratch) {
-    Map<String, Object> p = Obj.map();
-    p.put("uuid", player.getUniqueId().toString());
-    p.put("name", player.getName());
-    p.put("world", player.getWorld().getName());
-    p.put("gamemode", player.getGameMode().name());
-    p.put("ping", compat.ping(player));
-    p.put("since", sessions.since(player.getUniqueId()));
-    if (settings.coords) {
-      Location loc = player.getLocation(scratch);
-      p.put("x", Format.round(loc.getX(), 1));
-      p.put("y", Format.round(loc.getY(), 1));
-      p.put("z", Format.round(loc.getZ(), 1));
-    }
-    return p;
-  }
-
   private void collectFolia(long ts, List<Map<String, Object>> worlds) {
     Collection<? extends Player> online = new ArrayList<>(Bukkit.getOnlinePlayers());
     FoliaGather gather = new FoliaGather(online.size());
@@ -151,7 +134,7 @@ public final class StatsCollector {
     for (Player player : online) {
       tasks.runFor(player, () -> {
         try {
-          gather.players.add(player(player, new Location(player.getWorld(), 0, 0, 0)));
+          gather.players.add(snapshot.of(player, new Location(player.getWorld(), 0, 0, 0)));
           double[] region = compat.hasRegionTps()
               ? compat.regionTps(player.getLocation())
               : compat.serverTps();

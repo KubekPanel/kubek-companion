@@ -31,7 +31,7 @@ TPS, MSPT, heap and GC, worlds, players, events and lag reports, plus broadcasts
 - MSPT with avg, p50, p95, p99 and max on Paper, an estimate on Spigot, per region on Folia
 - Heap, non-heap, threads and GC, including real stop-the-world pauses
 - Worlds with chunk, entity and tile entity counts
-- Players with world, gamemode, ping, session time and, if you want, coordinates
+- Players with world, gamemode, ping, health, food, level, session time and, if you want, coordinates
 
 ### Events
 
